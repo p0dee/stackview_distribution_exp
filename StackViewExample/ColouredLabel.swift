@@ -16,12 +16,12 @@ class ColouredLabel: UILabel {
     var handler: DidSelectHandler?
     
     private override init(frame: CGRect) {
-        attribute = [NSBackgroundColorAttributeName:UIColor.lightGrayColor()]
+        attribute = [NSBackgroundColorAttributeName : UIColor.lightGray]
         super.init(frame: frame)
-        self.userInteractionEnabled = true
+        self.isUserInteractionEnabled = true
     }
     
-    convenience init(text: String, backgroundColor: UIColor = UIColor.lightGrayColor()) {
+    convenience init(text: String, backgroundColor: UIColor = UIColor.lightGray) {
         self.init()
         self.backgroundColor = UIColor(white: 0.0, alpha: 0.1)
         attribute[NSBackgroundColorAttributeName] = backgroundColor
@@ -57,12 +57,12 @@ class ColouredLabel: UILabel {
     
     private func updateLayer() {
         self.layer.borderWidth = selected ? 5 : 1
-        self.layer.borderColor = attribute[NSBackgroundColorAttributeName]?.colorWithAlphaComponent(0.5).CGColor
+        self.layer.borderColor = attribute[NSBackgroundColorAttributeName]?.withAlphaComponent(0.5).cgColor
     }
     
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        super.touchesEnded(touches, withEvent: event)
-        if let point = touches.first?.locationInView(self) where CGRectContainsPoint(self.bounds, point) {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        if let point = touches.first?.location(in: self), self.bounds.contains(point) {
             self.selected = true
         }
     }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+class ViewController: UIViewController {
     
     let huggingStepper: Stepper
     let compressionResistanceStepper: Stepper
@@ -18,8 +18,8 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     var selectedLabel: ColouredLabel? {
         didSet {
             if let selectedLabel = selectedLabel {
-                huggingStepper.value = Int(selectedLabel.contentHuggingPriorityForAxis(stackView.axis))
-                compressionResistanceStepper.value = Int(selectedLabel.contentCompressionResistancePriorityForAxis(stackView.axis))
+                huggingStepper.value = Int(selectedLabel.contentHuggingPriority(for: stackView.axis))
+                compressionResistanceStepper.value = Int(selectedLabel.contentCompressionResistancePriority(for: stackView.axis))
             }
         }
     }
@@ -40,31 +40,31 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = UIColor.lightGrayColor()
+        self.view.backgroundColor = UIColor.lightGray
         let handler: ColouredLabel.DidSelectHandler = {
             self.selectedLabel = $0
             self.labels.filter { !$0.isEqual(self.selectedLabel) }.forEach { $0.selected = false }
         }
 //        labels.append(ColouredLabel(text: "line 1\nline 2\nline 3", backgroundColor: UIColor.yellowColor())) //multi lines example
-        labels.append(ColouredLabel(text: "p0dee", backgroundColor: UIColor.yellowColor()))
-        labels.append(ColouredLabel(text: "Takeshi", backgroundColor: UIColor.cyanColor()))
-        labels.append(ColouredLabel(text: "tale", backgroundColor: UIColor.magentaColor()))
+        labels.append(ColouredLabel(text: "p0dee", backgroundColor: UIColor.yellow))
+        labels.append(ColouredLabel(text: "Takeshi", backgroundColor: UIColor.cyan))
+        labels.append(ColouredLabel(text: "tale", backgroundColor: UIColor.magenta))
         labels.forEach {
             stackView.addArrangedSubview($0)
             $0.handler = handler
         }
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .Horizontal
+        stackView.axis = .horizontal
 //        stackView.alignment = .Center
         self.view.addSubview(stackView)
         
         huggingStepper.translatesAutoresizingMaskIntoConstraints = false
         huggingStepper.tintColor = UIColor.huggingColor()
-        huggingStepper.addTarget(self, action: "didChangeHuggingPriorityValue:", forControlEvents: .ValueChanged)
+        huggingStepper.addTarget(self, action: Selector(("didChangeHuggingPriorityValue:")), for: .valueChanged)
         self.view.addSubview(huggingStepper)
         compressionResistanceStepper.translatesAutoresizingMaskIntoConstraints = false
         compressionResistanceStepper.tintColor = UIColor.compressionResistanceColor()
-        compressionResistanceStepper.addTarget(self, action: "didChangeCompressionResistancePriorityValue:", forControlEvents: .ValueChanged)
+        compressionResistanceStepper.addTarget(self, action: Selector(("didChangeCompressionResistancePriorityValue:")), for: .valueChanged)
         self.view.addSubview(compressionResistanceStepper)
         
         pickerView.translatesAutoresizingMaskIntoConstraints = false
@@ -78,25 +78,25 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     //MARK:
     private func setupConstraints() {
         var cstrs = [NSLayoutConstraint]()
-        cstrs += stackView.centerXAnchor.constraintEqualToAnchor(self.view.centerXAnchor)
-        cstrs += stackView.topAnchor.constraintEqualToAnchor(huggingStepper.bottomAnchor, constant: 10)
-        cstrs += stackView.widthAnchor.constraintEqualToConstant(300)
-        cstrs += stackView.heightAnchor.constraintEqualToConstant(100)
-        cstrs += huggingStepper.topAnchor.constraintEqualToAnchor(self.topLayoutGuide.topAnchor, constant: 30) //???
-        cstrs += compressionResistanceStepper.topAnchor.constraintEqualToAnchor(huggingStepper.topAnchor)
-        cstrs += huggingStepper.leadingAnchor.constraintEqualToAnchor(self.view.layoutMarginsGuide.leadingAnchor)
-        cstrs += compressionResistanceStepper.trailingAnchor.constraintEqualToAnchor(self.view.layoutMarginsGuide.trailingAnchor)
-        cstrs += huggingStepper.widthAnchor.constraintEqualToAnchor(compressionResistanceStepper.widthAnchor)
-        cstrs += pickerView.centerXAnchor.constraintEqualToAnchor(self.view.centerXAnchor)
-        cstrs += pickerView.topAnchor.constraintEqualToAnchor(stackView.bottomAnchor)
-        NSLayoutConstraint.activateConstraints(cstrs)
+        cstrs += stackView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
+        cstrs += stackView.topAnchor.constraint(equalTo: huggingStepper.bottomAnchor, constant: 10)
+        cstrs += stackView.widthAnchor.constraint(equalToConstant: 300)
+        cstrs += stackView.heightAnchor.constraint(equalToConstant: 100)
+        cstrs += huggingStepper.topAnchor.constraint(equalTo: self.topLayoutGuide.topAnchor, constant: 30) //???
+        cstrs += compressionResistanceStepper.topAnchor.constraint(equalTo: huggingStepper.topAnchor)
+        cstrs += huggingStepper.leadingAnchor.constraint(equalTo: self.view.layoutMarginsGuide.leadingAnchor)
+        cstrs += compressionResistanceStepper.trailingAnchor.constraint(equalTo: self.view.layoutMarginsGuide.trailingAnchor)
+        cstrs += huggingStepper.widthAnchor.constraint(equalTo: compressionResistanceStepper.widthAnchor)
+        cstrs += pickerView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
+        cstrs += pickerView.topAnchor.constraint(equalTo: stackView.bottomAnchor)
+        NSLayoutConstraint.activate(cstrs)
     }
     
     @objc func didChangeCompressionResistancePriorityValue(sender: Stepper) {
         guard let selectedLabel = selectedLabel else {
             return
         }
-        selectedLabel.setContentCompressionResistancePriority(Float(sender.value), forAxis: stackView.axis)
+        selectedLabel.setContentCompressionResistancePriority(Float(sender.value), for: stackView.axis)
         self.view.setNeedsDisplay()
     }
     
@@ -104,7 +104,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         guard let selectedLabel = selectedLabel else {
             return
         }
-        selectedLabel.setContentHuggingPriority(Float(sender.value), forAxis: stackView.axis)
+        selectedLabel.setContentHuggingPriority(Float(sender.value), for: stackView.axis)
         self.view.setNeedsDisplay()
     }
 }
@@ -112,30 +112,31 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
 
 class StackViewDetectorView: UIView {
     
-    private let cmpAttr = [NSFontAttributeName : UIFont.boldSystemFontOfSize(11), NSForegroundColorAttributeName : UIColor.compressionResistanceColor()]
-    private let hggAttr = [NSFontAttributeName : UIFont.boldSystemFontOfSize(11), NSForegroundColorAttributeName : UIColor.huggingColor()]
+    private let cmpAttr = [NSFontAttributeName : UIFont.boldSystemFont(ofSize: 11), NSForegroundColorAttributeName : UIColor.compressionResistanceColor()]
+    private let hggAttr = [NSFontAttributeName : UIFont.boldSystemFont(ofSize: 11), NSForegroundColorAttributeName : UIColor.huggingColor()]
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()
-        UIColor.whiteColor().setFill()
+        UIColor.white.setFill()
         let stackViews = self.subviews.filter { $0 is UIStackView } as! [UIStackView]
         stackViews.forEach { view in
-            CGContextFillRect(context, view.frame)
+            context?.fill(view.frame)
             view.arrangedSubviews.forEach {
                 let rect = $0.frame
                 var point = rect.origin + view.frame.origin
-                point.x += view.axis == .Vertical ? rect.size.width : 0
-                point.y += view.axis == .Horizontal ? rect.size.height : 0
-                contentPriorityDescriotionText($0, view.axis).drawAtPoint(point)
+                point.x += view.axis == .vertical ? rect.size.width : 0
+                point.y += view.axis == .horizontal ? rect.size.height : 0
+                contentPriorityDescriotionText(view: $0, view.axis).draw(at: point)
+                
             }
         }
     }
     
     private func contentPriorityDescriotionText(view: UIView, _ axis: UILayoutConstraintAxis) -> NSAttributedString {
         let str = NSMutableAttributedString()
-        str.appendAttributedString(NSAttributedString(string: "\(Int(view.contentHuggingPriorityForAxis(axis)))", attributes: hggAttr))
-        str.appendAttributedString(NSAttributedString(string: "\n", attributes: nil))
-        str.appendAttributedString(NSAttributedString(string: "\(Int(view.contentCompressionResistancePriorityForAxis(axis)))", attributes: cmpAttr))
+        str.append(NSAttributedString(string: "\(Int(view.contentHuggingPriority(for: axis)))", attributes: hggAttr))
+        str.append(NSAttributedString(string: "\n", attributes: nil))
+        str.append(NSAttributedString(string: "\(Int(view.contentCompressionResistancePriority(for: axis)))", attributes: cmpAttr))
         return str
     }
     

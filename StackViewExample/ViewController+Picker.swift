@@ -8,18 +8,18 @@
 
 import UIKit
 
-extension ViewController {
+extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
     //MARK: <UIPickerViewDataSource>
-    @objc func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+    @objc func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
-    @objc func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+    @objc func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return 5
     }
     
     //MARK: <UIPickerViewDelegate>
-    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         switch row {
         case 0:
             return "Fill"
@@ -36,8 +36,8 @@ extension ViewController {
         }
     }
     
-    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        stackView.distribution = UIStackViewDistribution(rawValue: row) ?? .Fill
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        stackView.distribution = UIStackViewDistribution(rawValue: row) ?? .fill
         self.view.setNeedsDisplay()
     }
     

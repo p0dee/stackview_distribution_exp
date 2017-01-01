@@ -10,10 +10,10 @@ import UIKit
 
 extension UIColor {
     class func huggingColor() -> UIColor {
-        return self.blueColor()
+        return self.blue
     }
     class func compressionResistanceColor() -> UIColor {
-        return self.redColor()
+        return self.red
     }
 }
 
@@ -22,6 +22,6 @@ func + (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
     return CGPoint(x: lhs.x + rhs.x, y: lhs.y + rhs.y)
 }
 
-func += <T> (inout lhs: Array<T>, rhs: T) {
+func += <T> (lhs: inout Array<T>, rhs: T) {
     lhs.append(rhs)
 }
